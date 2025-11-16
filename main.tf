@@ -1,5 +1,5 @@
 resource "aws_vpc" "dev" {
-  cidr_block  = var.vpc_cidr
+  cidr_block = var.vpc_cidr
 
   tags = {
     Name = var.vpc_name
@@ -8,11 +8,11 @@ resource "aws_vpc" "dev" {
 }
 
 resource "aws_subnet" "dev" {
-  vpc_id      = aws_vpc.dev.id
-  cidr_block  = var.subnet_cidr
+  count      = length(var.subnets)
+  vpc_id     = aws_vpc.dev.id
+  cidr_block = cidrsubnet(aws_vpc.dev.cidr_block, 4, count.index + 1)
 
   tags = {
-    Name = var.subnet_name
+    Name = var.subnets[count.index]
   }
-
 }
